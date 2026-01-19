@@ -934,6 +934,16 @@ h1, h2, h3 {
         grid-template-columns: 1fr;
     }
 
+    /* Disable backdrop-filter on mobile for better performance */
+    .info-item {
+        backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-links {
+        backdrop-filter: none;
+    }
+
     .container {
         padding: 60px 1.5rem;
     }

@@ -154,16 +154,32 @@ document.querySelectorAll('.gallery-item').forEach(item => {
 // Disable parallax on mobile for better performance
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
+// Throttle function for performance
+const throttle = (func, limit) => {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+};
+
 if (!isMobile) {
-    // Parallax effect for hero section (desktop only)
-    window.addEventListener('scroll', () => {
+    // Parallax effect for hero section (desktop only) - throttled for performance
+    const handleParallax = throttle(() => {
         const scrolled = window.pageYOffset;
         const hero = document.querySelector('.hero-content');
         if (hero && scrolled < window.innerHeight) {
-            hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-            hero.style.opacity = 1 - (scrolled / window.innerHeight);
+            requestAnimationFrame(() => {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / window.innerHeight);
+            });
         }
-    });
+    }, 16);
+    
+    window.addEventListener('scroll', handleParallax);
 }
 
 // Form validation enhancement
@@ -200,28 +216,33 @@ contactForm.addEventListener('submit', function(e) {
     }, 1000);
 });
 
-// Animated counter for stats
+// Animated counter for stats using requestAnimationFrame for smoother animation
 const animateCounter = (element, target) => {
     const duration = 2000;
-    const start = 0;
-    const increment = target / (duration / 16);
-    let current = start;
+    const startTime = performance.now();
     
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            clearInterval(timer);
-            current = target;
-        }
+    const updateCounter = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease out quad for smooth deceleration
+        const easeOutProgress = 1 - (1 - progress) * (1 - progress);
+        const current = Math.floor(easeOutProgress * target);
         
         if (target >= 1000) {
             element.textContent = Math.floor(current / 1000) + 'K+';
         } else if (target === 100) {
-            element.textContent = Math.floor(current) + '%';
+            element.textContent = current + '%';
         } else {
-            element.textContent = Math.floor(current) + '+';
+            element.textContent = current + '+';
         }
-    }, 16);
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        }
+    };
+    
+    requestAnimationFrame(updateCounter);
 };
 
 // Trigger counter animation when stats section is visible
