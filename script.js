@@ -30,12 +30,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
+let lastScrollY = window.scrollY;
+
 window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
+    lastScrollY = window.scrollY;
 });
 
 // Scroll to Top Button
@@ -55,17 +58,20 @@ scrollTopBtn.addEventListener('click', () => {
     });
 });
 
-// Intersection Observer for fade-in animations
+// Enhanced Intersection Observer for fade-in animations with stagger
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.animation = 'fadeUp 0.6s ease-out forwards';
+            // Add stagger delay based on element index within its parent
+            const siblings = Array.from(entry.target.parentElement.children).filter(el => el.classList.contains('fade-in'));
+            const siblingIndex = siblings.indexOf(entry.target);
+            entry.target.style.animationDelay = `${siblingIndex * 0.1}s`;
+            entry.target.classList.add('animated');
         }
     });
 }, observerOptions);
@@ -103,25 +109,62 @@ contactForm.addEventListener('submit', (e) => {
     successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
-// Add hover effects to service cards
+// Enhanced 3D hover effects for service cards
 document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-8px)';
+    card.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px)`;
     });
     
     card.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
+        this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
     });
 });
 
-// Parallax effect for hero section
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-    }
+// Gallery item hover effects
+document.querySelectorAll('.gallery-item').forEach(item => {
+    item.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 30;
+        const rotateY = (centerX - x) / 30;
+        
+        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+    });
+    
+    item.addEventListener('mouseleave', function() {
+        this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+    });
 });
+
+// Disable parallax on mobile for better performance
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+if (!isMobile) {
+    // Parallax effect for hero section (desktop only)
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-content');
+        if (hero && scrolled < window.innerHeight) {
+            hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+            hero.style.opacity = 1 - (scrolled / window.innerHeight);
+        }
+    });
+}
 
 // Form validation enhancement
 const inputs = document.querySelectorAll('input, textarea, select');
@@ -129,13 +172,16 @@ inputs.forEach(input => {
     input.addEventListener('blur', function() {
         if (this.value.trim() !== '' && this.checkValidity()) {
             this.style.borderColor = '#28a745';
+            this.style.boxShadow = '0 0 0 4px rgba(40, 167, 69, 0.1)';
         } else if (this.value.trim() !== '') {
             this.style.borderColor = '#dc3545';
+            this.style.boxShadow = '0 0 0 4px rgba(220, 53, 69, 0.1)';
         }
     });
 
     input.addEventListener('focus', function() {
         this.style.borderColor = 'var(--orange)';
+        this.style.boxShadow = '0 0 0 4px rgba(255, 107, 53, 0.1)';
     });
 });
 
@@ -143,15 +189,80 @@ inputs.forEach(input => {
 contactForm.addEventListener('submit', function(e) {
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;">✨ Sending...</span>';
     submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.8';
 
     setTimeout(() => {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
     }, 1000);
 });
 
+// Animated counter for stats
+const animateCounter = (element, target) => {
+    const duration = 2000;
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            clearInterval(timer);
+            current = target;
+        }
+        
+        if (target >= 1000) {
+            element.textContent = Math.floor(current / 1000) + 'K+';
+        } else if (target === 100) {
+            element.textContent = Math.floor(current) + '%';
+        } else {
+            element.textContent = Math.floor(current) + '+';
+        }
+    }, 16);
+};
+
+// Trigger counter animation when stats section is visible
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const statNumbers = entry.target.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.dataset.target);
+                animateCounter(stat, target);
+            });
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) {
+    statsObserver.observe(statsSection);
+}
+
+// Mouse follower effect for hero section (subtle)
+const hero = document.querySelector('.hero');
+if (hero && !isMobile) {
+    hero.addEventListener('mousemove', (e) => {
+        const shapes = document.querySelectorAll('.shape');
+        const particles = document.querySelectorAll('.particle');
+        
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 10;
+            const x = (mouseX - 0.5) * speed;
+            const y = (mouseY - 0.5) * speed;
+            shape.style.transform = `translate(${x}px, ${y}px) rotate(${x * 2}deg)`;
+        });
+    });
+}
+
 // Console welcome message
-console.log('%cWelcome to Epsom Auto Repairs!', 'color: #ff6b35; font-size: 20px; font-weight: bold;');
-console.log('%cWebsite built with vanilla HTML, CSS, and JavaScript', 'color: #1a2332; font-size: 14px;');
+console.log('%c🚗 Welcome to Epsom Auto Repairs!', 'color: #ff6b35; font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);');
+console.log('%c⚡ Website built with vanilla HTML, CSS, and JavaScript', 'color: #1a2332; font-size: 14px;');
+console.log('%c🔧 Serving the Epsom community for 20+ years', 'color: #8a9199; font-size: 12px;');
