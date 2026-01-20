@@ -25,8 +25,18 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
+        <!-- Background Image -->
+        <div class="hero-bg">
+            <img src="images/carOnLift.jpg" alt="Modern auto repair facility">
+        </div>
+        
         <!-- Animated Particles -->
         <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
             <div class="particle"></div>
@@ -47,40 +57,88 @@
             <div class="shape shape-4"></div>
         </div>
 
+        <!-- Animated Lines -->
+        <div class="hero-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+
         <div class="hero-content">
-            <p class="hero-subtitle">Your Trusted Local Mechanics</p>
-            <h1>Expert Auto Repair Services</h1>
-            <p>Quality car maintenance and repairs you can trust. Serving the Epsom, Auckland community with exceptional service.</p>
+            <div class="hero-badge">
+                <span class="badge-icon">⭐</span>
+                <span>Auckland's Premier Auto Repair</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="title-line">Your Car Deserves</span>
+                <span class="title-line highlight">The Best Care</span>
+            </h1>
+            <p class="hero-description">Professional auto repairs with cutting-edge technology. We treat every vehicle like our own — with precision, expertise, and genuine care.</p>
             <div class="cta-buttons">
-                <a href="#contact" class="btn btn-primary">
-                    <span>📅</span> Book Appointment
+                <a href="#contact" class="btn btn-primary btn-glow">
+                    <span class="btn-icon">📅</span> 
+                    <span class="btn-text">Book Now</span>
+                    <span class="btn-arrow">→</span>
                 </a>
-                <a href="#services" class="btn btn-secondary">
-                    <span>🔧</span> Our Services
+                <a href="tel:+6496317019" class="btn btn-secondary btn-phone">
+                    <span class="btn-icon">📞</span> 
+                    <span class="btn-text">09 631 7019</span>
                 </a>
             </div>
+            <div class="hero-trust">
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>WOF Certified</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>Same Day Service</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>Free Quotes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>Scroll to explore</span>
         </div>
     </section>
 
     <!-- Showcase Section - Featured Images -->
     <section class="showcase-section">
+        <div class="showcase-header">
+            <span class="showcase-label">Our Expertise</span>
+            <h2>World-Class Auto Care</h2>
+        </div>
         <div class="showcase-grid">
-            <div class="showcase-item fade-in">
+            <div class="showcase-item showcase-large fade-in">
                 <img src="images/carOnLift.jpg" alt="Modern repair bay with lifted car and dramatic lighting">
                 <div class="showcase-overlay">
+                    <span class="showcase-number">01</span>
                     <h3>State-of-the-Art Facility</h3>
+                    <p>Modern equipment & technology</p>
                 </div>
             </div>
             <div class="showcase-item fade-in">
                 <img src="images/mechanichandsOnEngine.jpg" alt="Mechanic hands working on engine with sparks, cinematic depth">
                 <div class="showcase-overlay">
+                    <span class="showcase-number">02</span>
                     <h3>Expert Craftsmanship</h3>
+                    <p>Skilled certified mechanics</p>
                 </div>
             </div>
             <div class="showcase-item fade-in">
                 <img src="images/diagnosticComputerOnACarInAworkshop.jpg" alt="Diagnostic computer connected to sports car with futuristic lighting">
                 <div class="showcase-overlay">
+                    <span class="showcase-number">03</span>
                     <h3>Advanced Diagnostics</h3>
+                    <p>Precision computerized testing</p>
                 </div>
             </div>
         </div>
@@ -154,7 +212,8 @@
     <section class="features" id="about">
         <div class="container">
             <div class="section-header">
-                <h2>Why Choose Us</h2>
+                <span class="section-label">Why B&M Auto?</span>
+                <h2>The B&M Difference</h2>
                 <p>We're committed to providing the best auto repair service in Epsom, Auckland</p>
             </div>
             <div class="features-grid">
@@ -182,48 +241,92 @@
         </div>
     </section>
 
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Customer Reviews</span>
+                <h2>What Our Customers Say</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Outstanding service! They diagnosed the issue with my car quickly and the repair was done perfectly. Highly recommend B&M Auto to everyone!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JM</div>
+                        <div class="author-info">
+                            <strong>James M.</strong>
+                            <span>Epsom Local</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card featured fade-in">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Best mechanics in Auckland! Fair prices, honest advice, and they always go the extra mile. My whole family brings their cars here now."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SK</div>
+                        <div class="author-info">
+                            <strong>Sarah K.</strong>
+                            <span>Remuera</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Fast WOF service and they found issues other mechanics missed. Professional team that genuinely cares about their customers. 10/10!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DT</div>
+                        <div class="author-info">
+                            <strong>David T.</strong>
+                            <span>Mt Eden</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner Section -->
+    <section class="cta-banner">
+        <div class="cta-content">
+            <h2>Ready to Experience Premium Auto Care?</h2>
+            <p>Book your appointment today and see why Auckland drivers trust B&M Auto Repairs</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="btn btn-primary btn-glow">
+                    <span>📅</span> Book Appointment
+                </a>
+                <a href="tel:+6496317019" class="btn btn-white">
+                    <span>📞</span> Call 09 631 7019
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Gallery Section -->
     <section class="gallery-section" id="gallery">
         <div class="container">
             <div class="section-header">
-                <h2>Our Workshop</h2>
+                <span class="section-label">Inside B&M</span>
+                <h2>Our Workshop Gallery</h2>
                 <p>Take a peek inside our state-of-the-art facility</p>
             </div>
-            <div class="gallery-grid">
-                <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">🚗</div>
-                        <p>Photo suggestion: Modern auto repair bay with a lifted car and professional equipment, dramatic lighting</p>
+            <div class="gallery-masonry">
+                <div class="gallery-item gallery-large fade-in">
+                    <img src="images/carOnLift.jpg" alt="Modern auto repair bay">
+                    <div class="gallery-caption">
+                        <h4>Professional Repair Bays</h4>
                     </div>
                 </div>
                 <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">🔧</div>
-                        <p>Photo suggestion: Close-up of mechanic hands working on engine, sparks flying, cinematic style</p>
+                    <img src="images/mechanichandsOnEngine.jpg" alt="Expert mechanic at work">
+                    <div class="gallery-caption">
+                        <h4>Expert Mechanics</h4>
                     </div>
                 </div>
                 <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">⚙️</div>
-                        <p>Photo suggestion: High-tech diagnostic computer connected to a sports car, futuristic vibes</p>
-                    </div>
-                </div>
-                <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">🏆</div>
-                        <p>Photo suggestion: Team of professional mechanics in uniform, confident poses, workshop background</p>
-                    </div>
-                </div>
-                <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">💡</div>
-                        <p>Photo suggestion: Modern reception/waiting area with comfortable seating and coffee station</p>
-                    </div>
-                </div>
-                <div class="gallery-item fade-in">
-                    <div class="gallery-placeholder">
-                        <div class="gallery-placeholder-icon">🌟</div>
-                        <p>Photo suggestion: Before/after comparison of a beautifully restored classic car</p>
+                    <img src="images/diagnosticComputerOnACarInAworkshop.jpg" alt="Advanced diagnostics">
+                    <div class="gallery-caption">
+                        <h4>Cutting-Edge Technology</h4>
                     </div>
                 </div>
             </div>
