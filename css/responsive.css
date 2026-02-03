@@ -242,6 +242,25 @@ html {
   background-size: cover !important;
   background-position: center center !important;
 }
+
+/* Reduce slider whitespace on mobile */
+.rev_slider_wrapper {
+  max-height: 350px !important;
+  overflow: hidden !important;
+}
+.rev_slider {
+  max-height: 350px !important;
+}
+.rev_slider .tp-bgimg {
+  background-size: cover !important;
+  background-position: center top !important;
+}
+#home .container-fluid {
+  padding: 0 !important;
+}
+#home section {
+  padding: 0 !important;
+}
 }
 /* Extra Small Devices, Phones */
 @media only screen and (max-width : 479px) {
