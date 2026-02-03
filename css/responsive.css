@@ -238,7 +238,7 @@ html {
 }
 
 /* Make slide 0 image bigger/cropped on mobile */
-.rev_slider .rev-slidebg {
+.rev_slider li[data-index='rs-new'] .rev-slidebg {
   background-size: cover !important;
   background-position: center center !important;
 }
