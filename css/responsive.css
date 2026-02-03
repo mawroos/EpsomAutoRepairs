@@ -222,6 +222,45 @@ html {
   border-width: 26px;
   left: -52px;
 }
+
+/* Dark background for header logo area on mobile */
+.header .header-middle.bg-lightest {
+  background-color: #222222 !important;
+}
+.header .header-middle .text-gray,
+.header .header-middle .text-black,
+.header .header-middle .text-uppercase,
+.header .header-middle a {
+  color: #ffffff !important;
+}
+.header .header-middle h5 {
+  color: #ffffff !important;
+}
+
+/* Make slide 0 image bigger/cropped on mobile */
+.rev_slider li[data-index='rs-new'] .rev-slidebg {
+  background-size: cover !important;
+  background-position: center center !important;
+}
+
+/* Reduce slider whitespace on mobile */
+.rev_slider_wrapper {
+  max-height: 350px !important;
+  overflow: hidden !important;
+}
+.rev_slider {
+  max-height: 350px !important;
+}
+.rev_slider .tp-bgimg {
+  background-size: cover !important;
+  background-position: center top !important;
+}
+#home .container-fluid {
+  padding: 0 !important;
+}
+#home section {
+  padding: 0 !important;
+}
 }
 /* Extra Small Devices, Phones */
 @media only screen and (max-width : 479px) {
