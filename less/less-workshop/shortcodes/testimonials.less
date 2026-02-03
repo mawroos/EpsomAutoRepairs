@@ -1,0 +1,35 @@
+/*
+ * Shortcode: Testimonials.less
+ * -----------------------------------------------
+*/
+.testimonial .content {
+  position: relative;
+}
+.testimonial .content::after {
+  color: #202c45;
+  content: "\f10e";
+  font-family: fontawesome;
+  font-size: 48px;
+  opacity: 0.2;
+  position: absolute;
+  right: 20px;
+  top: -15px;
+}
+.testimonial.style1 .comment {
+  padding: 60px;
+}
+.testimonial.style1 .comment p {
+  color: #fff;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 500;
+}
+.testimonial.style1 .comment::after {
+  color: #fff;
+  content: "\f10d";
+  font-family: fontawesome;
+  font-size: 48px;
+  left: 25px;
+  position: absolute;
+  top: 0px;
+}

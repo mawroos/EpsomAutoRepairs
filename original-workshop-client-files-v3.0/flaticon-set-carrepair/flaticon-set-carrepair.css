@@ -1,0 +1,79 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 01/05/2016 18:49
+  	*/
+
+@font-face {
+  font-family: "flaticon-set-carrepair";
+  src: url("flaticon-set-carrepair.eot");
+  src: url("flaticon-set-carrepair.eot?#iefix") format("embedded-opentype"),
+       url("flaticon-set-carrepair.woff") format("woff"),
+       url("flaticon-set-carrepair.ttf") format("truetype"),
+       url("flaticon-set-carrepair.svg#flaticon-set-carrepair") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "flaticon-set-carrepair";
+    src: url("flaticon-set-carrepair.svg#flaticon-set-carrepair") format("svg");
+  }
+}
+
+[class^="flaticon-carrepair-"]:before, [class*=" flaticon-carrepair-"]:before,
+[class^="flaticon-carrepair-"]:after, [class*=" flaticon-carrepair-"]:after {   
+  font-family: "flaticon-set-carrepair";
+  font-style: normal;
+}
+
+.flaticon-carrepair-art:before { content: "\f100"; }
+.flaticon-carrepair-car-lifter:before { content: "\f101"; }
+.flaticon-carrepair-car-on-a-frame:before { content: "\f102"; }
+.flaticon-carrepair-car-repair:before { content: "\f103"; }
+.flaticon-carrepair-car-service:before { content: "\f104"; }
+.flaticon-carrepair-car-washing-machine:before { content: "\f105"; }
+.flaticon-carrepair-car-wheel:before { content: "\f106"; }
+.flaticon-carrepair-car-with-cogwheels:before { content: "\f107"; }
+.flaticon-carrepair-car-with-spare-tire:before { content: "\f108"; }
+.flaticon-carrepair-car-with-wrench:before { content: "\f109"; }
+.flaticon-carrepair-changing-car-tire:before { content: "\f10a"; }
+.flaticon-carrepair-child-seat-for-the-car:before { content: "\f10b"; }
+.flaticon-carrepair-cogwheel:before { content: "\f10c"; }
+.flaticon-carrepair-cogwheel-1:before { content: "\f10d"; }
+.flaticon-carrepair-mechanic:before { content: "\f10e"; }
+.flaticon-carrepair-people:before { content: "\f10f"; }
+.flaticon-carrepair-piston:before { content: "\f110"; }
+.flaticon-carrepair-pistons-cross:before { content: "\f111"; }
+.flaticon-carrepair-profile:before { content: "\f112"; }
+.flaticon-carrepair-repair:before { content: "\f113"; }
+.flaticon-carrepair-repair-1:before { content: "\f114"; }
+.flaticon-carrepair-repair-2:before { content: "\f115"; }
+.flaticon-carrepair-repairing-car:before { content: "\f116"; }
+.flaticon-carrepair-repairing-car-1:before { content: "\f117"; }
+.flaticon-carrepair-repairing-service:before { content: "\f118"; }
+.flaticon-carrepair-tool:before { content: "\f119"; }
+.flaticon-carrepair-tool-1:before { content: "\f11a"; }
+.flaticon-carrepair-tool-2:before { content: "\f11b"; }
+.flaticon-carrepair-tool-3:before { content: "\f11c"; }
+.flaticon-carrepair-tool-4:before { content: "\f11d"; }
+.flaticon-carrepair-tool-5:before { content: "\f11e"; }
+.flaticon-carrepair-tool-6:before { content: "\f11f"; }
+.flaticon-carrepair-tool-7:before { content: "\f120"; }
+.flaticon-carrepair-transport:before { content: "\f121"; }
+.flaticon-carrepair-transport-1:before { content: "\f122"; }
+.flaticon-carrepair-transport-2:before { content: "\f123"; }
+.flaticon-carrepair-transport-3:before { content: "\f124"; }
+.flaticon-carrepair-transport-4:before { content: "\f125"; }
+.flaticon-carrepair-transport-5:before { content: "\f126"; }
+.flaticon-carrepair-transport-6:before { content: "\f127"; }
+.flaticon-carrepair-transport-7:before { content: "\f128"; }
+.flaticon-carrepair-two-gears:before { content: "\f129"; }
+.flaticon-carrepair-vehicle-repair:before { content: "\f12a"; }
+.flaticon-carrepair-web:before { content: "\f12b"; }
+.flaticon-carrepair-wheel:before { content: "\f12c"; }
+.flaticon-carrepair-working-tools:before { content: "\f12d"; }
+.flaticon-carrepair-wrench:before { content: "\f12e"; }
+.flaticon-carrepair-wrench-1:before { content: "\f12f"; }
+.flaticon-carrepair-wrench-2:before { content: "\f130"; }
+.flaticon-carrepair-wrench-3:before { content: "\f131"; }
