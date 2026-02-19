@@ -1,19 +1,7 @@
 <?php
 
-require_once('phpmailer/class.phpmailer.php');
-require_once('phpmailer/class.smtp.php');
-
-$mail = new PHPMailer();
-
-
-//$mail->SMTPDebug = 3;                               // Enable verbose debug output
-$mail->isSMTP();                                      // Set mailer to use SMTP
-$mail->Host = 'just55.justhost.com';                  // Specify main and backup SMTP servers
-$mail->SMTPAuth = true;                               // Enable SMTP authentication
-$mail->Username = 'themeforest@ismail-hossain.me';    // SMTP username
-$mail->Password = 'AsDf12**';                         // SMTP password
-$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
-$mail->Port = 465;                                    // TCP port to connect to
+require_once(__DIR__ . '/sendgrid-mailer.php');
+require_once(__DIR__ . '/spam-protection.php');
 
 $message = "";
 $status = "false";
@@ -21,53 +9,79 @@ $status = "false";
 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
     if( $_POST['form_name'] != '' AND $_POST['form_email'] != '' AND $_POST['form_subject'] != '' ) {
 
-        $name = $_POST['form_name'];
-        $email = $_POST['form_email'];
-        $subject = $_POST['form_subject'];
-        $message = $_POST['form_message'];
+        $name = htmlspecialchars($_POST['form_name'], ENT_QUOTES, 'UTF-8');
+        $email = filter_var($_POST['form_email'], FILTER_SANITIZE_EMAIL);
+        $subject = htmlspecialchars($_POST['form_subject'], ENT_QUOTES, 'UTF-8');
+        $form_message = htmlspecialchars($_POST['form_message'], ENT_QUOTES, 'UTF-8');
 
-        $subject = isset($subject) ? $subject : 'New Message | Free Quote';
+        $subject = !empty($subject) ? $subject : 'New Message | Free Quote';
 
-        $botcheck = $_POST['form_botcheck'];
-
-        $toemail = 'spam.thememascot@gmail.com'; // Receiver Email Address
-        $toname = 'ThemeMascot';                // Receiver Name
-
-        if( $botcheck == '' ) {
-
-            $mail->SetFrom( $email , $name );
-            $mail->AddReplyTo( $email , $name );
-            $mail->AddAddress( $toemail , $toname );
-            $mail->Subject = $subject;
-
-            $name = isset($name) ? "Name: $name<br><br>" : '';
-            $email = isset($email) ? "Email: $email<br><br>" : '';
-            $subject = isset($subject) ? "Subject: $subject<br><br>" : '';
-            $message = isset($message) ? "Message: $message<br><br>" : '';
-
-            $referrer = $_SERVER['HTTP_REFERER'] ? '<br><br><br>This Form was submitted from: ' . $_SERVER['HTTP_REFERER'] : '';
-
-            $body = "$name $email $message $referrer";
-
-            //mail attachment
-            if ( isset( $_FILES['form_attachment'] ) && $_FILES['form_attachment']['error'] == UPLOAD_ERR_OK ) {
-                $mail->IsHTML(true);
-                $mail->AddAttachment( $_FILES['form_attachment']['tmp_name'], $_FILES['form_attachment']['name'] );
-            }
-
-            $mail->MsgHTML( $body );
-            $sendEmail = $mail->Send();
-
-            if( $sendEmail == true ):
-                $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
-                $status = "true";
-            else:
-                $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.<br /><br /><strong>Reason:</strong><br />' . $mail->ErrorInfo . '';
-                $status = "false";
-            endif;
-        } else {
-            $message = 'Bot <strong>Detected</strong>.! Clean yourself Botster.!';
+        if( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+            $message = 'Please provide a valid email address.';
             $status = "false";
+        } else {
+            // Run spam protection checks (honeypot + rate limiting + reCAPTCHA)
+            $spamCheck = check_spam_protection('form_botcheck');
+
+            if( $spamCheck['passed'] ) {
+
+                $name_line = !empty($name) ? "Name: $name<br><br>" : '';
+                $email_line = !empty($email) ? "Email: $email<br><br>" : '';
+                $subject_line = !empty($subject) ? "Subject: $subject<br><br>" : '';
+                $message_line = !empty($form_message) ? "Message: $form_message<br><br>" : '';
+
+                $referrer = isset($_SERVER['HTTP_REFERER']) ? '<br><br><br>This Form was submitted from: ' . htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
+
+                $body = "$name_line $email_line $subject_line $message_line $referrer";
+
+                // Handle file attachment
+                $attachments = [];
+                $attachmentError = false;
+                if ( isset( $_FILES['form_attachment'] ) && $_FILES['form_attachment']['error'] == UPLOAD_ERR_OK ) {
+                    $maxFileSize = 10 * 1024 * 1024; // 10 MB
+                    $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'text/plain'];
+                    $fileMime = mime_content_type($_FILES['form_attachment']['tmp_name']);
+                    if ($_FILES['form_attachment']['size'] > $maxFileSize) {
+                        $message = 'File is too large. Maximum size is 10 MB.';
+                        $status = "false";
+                        $attachmentError = true;
+                    } elseif (!in_array($fileMime, $allowedTypes)) {
+                        $message = 'File type not allowed. Please upload a PDF, Word document, image, or text file.';
+                        $status = "false";
+                        $attachmentError = true;
+                    } else {
+                        $fileContent = base64_encode(file_get_contents($_FILES['form_attachment']['tmp_name']));
+                        $fileName = htmlspecialchars($_FILES['form_attachment']['name'], ENT_QUOTES, 'UTF-8');
+                        $attachments[] = [
+                            'content'  => $fileContent,
+                            'filename' => $fileName,
+                            'type'     => $fileMime
+                        ];
+                    }
+                }
+
+                if (!$attachmentError) {
+                    $result = sendgrid_send(
+                        CONTACT_EMAIL, CONTACT_NAME,
+                        CONTACT_EMAIL, CONTACT_NAME,
+                        $subject,
+                        $body,
+                        $email, $name,
+                        $attachments
+                    );
+
+                    if( $result['success'] ):
+                        $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
+                        $status = "true";
+                    else:
+                        $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.';
+                        $status = "false";
+                    endif;
+                }
+            } else {
+                $message = htmlspecialchars($spamCheck['error'], ENT_QUOTES, 'UTF-8');
+                $status = "false";
+            }
         }
     } else {
         $message = 'Please <strong>Fill up</strong> all the Fields and Try Again.';
