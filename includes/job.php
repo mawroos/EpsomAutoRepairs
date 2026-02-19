@@ -38,33 +38,48 @@ if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
                 // Handle file attachment
                 $attachments = [];
+                $attachmentError = false;
                 if ( isset( $_FILES['form_attachment'] ) && $_FILES['form_attachment']['error'] == UPLOAD_ERR_OK ) {
-                    $fileContent = base64_encode(file_get_contents($_FILES['form_attachment']['tmp_name']));
-                    $fileName = htmlspecialchars($_FILES['form_attachment']['name'], ENT_QUOTES, 'UTF-8');
+                    $maxFileSize = 10 * 1024 * 1024; // 10 MB
+                    $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'text/plain'];
                     $fileMime = mime_content_type($_FILES['form_attachment']['tmp_name']);
-                    $attachments[] = [
-                        'content'  => $fileContent,
-                        'filename' => $fileName,
-                        'type'     => $fileMime
-                    ];
+                    if ($_FILES['form_attachment']['size'] > $maxFileSize) {
+                        $message = 'File is too large. Maximum size is 10 MB.';
+                        $status = "false";
+                        $attachmentError = true;
+                    } elseif (!in_array($fileMime, $allowedTypes)) {
+                        $message = 'File type not allowed. Please upload a PDF, Word document, image, or text file.';
+                        $status = "false";
+                        $attachmentError = true;
+                    } else {
+                        $fileContent = base64_encode(file_get_contents($_FILES['form_attachment']['tmp_name']));
+                        $fileName = htmlspecialchars($_FILES['form_attachment']['name'], ENT_QUOTES, 'UTF-8');
+                        $attachments[] = [
+                            'content'  => $fileContent,
+                            'filename' => $fileName,
+                            'type'     => $fileMime
+                        ];
+                    }
                 }
 
-                $result = sendgrid_send(
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    $subject,
-                    $body,
-                    $email, $name,
-                    $attachments
-                );
+                if (!$attachmentError) {
+                    $result = sendgrid_send(
+                        CONTACT_EMAIL, CONTACT_NAME,
+                        CONTACT_EMAIL, CONTACT_NAME,
+                        $subject,
+                        $body,
+                        $email, $name,
+                        $attachments
+                    );
 
-                if( $result['success'] ):
-                    $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
-                    $status = "true";
-                else:
-                    $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.';
-                    $status = "false";
-                endif;
+                    if( $result['success'] ):
+                        $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
+                        $status = "true";
+                    else:
+                        $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.';
+                        $status = "false";
+                    endif;
+                }
             } else {
                 $message = htmlspecialchars($spamCheck['error'], ENT_QUOTES, 'UTF-8');
                 $status = "false";

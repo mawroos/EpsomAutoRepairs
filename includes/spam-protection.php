@@ -97,9 +97,10 @@ function check_rate_limit($maxRequests = 5, $windowSeconds = 300) {
     }
 
     // Remove expired timestamps
-    $data['timestamps'] = array_values(array_filter($data['timestamps'], function ($ts) use ($now, $windowSeconds) {
+    $data['timestamps'] = array_filter($data['timestamps'], function ($ts) use ($now, $windowSeconds) {
         return ($now - $ts) < $windowSeconds;
-    }));
+    });
+    $data['timestamps'] = array_values($data['timestamps']);
 
     if (count($data['timestamps']) >= $maxRequests) {
         return ['allowed' => false, 'error' => 'Too many submissions. Please wait a few minutes before trying again.'];
