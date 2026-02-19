@@ -1,7 +1,19 @@
 <?php
 
-require_once(__DIR__ . '/sendgrid-mailer.php');
-require_once(__DIR__ . '/spam-protection.php');
+require_once('phpmailer/class.phpmailer.php');
+require_once('phpmailer/class.smtp.php');
+
+$mail = new PHPMailer();
+
+
+//$mail->SMTPDebug = 3;                               // Enable verbose debug output
+$mail->isSMTP();                                      // Set mailer to use SMTP
+$mail->Host = 'just55.justhost.com';  // Specify main and backup SMTP servers
+$mail->SMTPAuth = true;                               // Enable SMTP authentication
+$mail->Username = 'themeforest@ismail-hossain.me';                 // SMTP username
+$mail->Password = 'AsDf12**';                           // SMTP password
+$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
+$mail->Port = 465;                                    // TCP port to connect to
 
 $message = "";
 $status = "false";
@@ -9,55 +21,52 @@ $status = "false";
 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
     if( $_POST['form_name'] != '' AND $_POST['form_email'] != '' ) {
 
-        $name = htmlspecialchars($_POST['form_name'], ENT_QUOTES, 'UTF-8');
-        $email = filter_var($_POST['form_email'], FILTER_SANITIZE_EMAIL);
-        $form_message = htmlspecialchars($_POST['form_message'], ENT_QUOTES, 'UTF-8');
+        $name = $_POST['form_name'];
+        $email = $_POST['form_email'];
+        $message = $_POST['form_message'];
 
-        $subject = 'New Message | Appointment Form';
-        $phone = isset($_POST['form_phone']) ? htmlspecialchars($_POST['form_phone'], ENT_QUOTES, 'UTF-8') : '';
+        $subject = isset($subject) ? $subject : 'New Message | Appointment Form';
+        $phone = isset($_POST['form_phone']) ? $_POST['form_phone'] : '';
 
-        $appontment_date = isset($_POST['form_appontment_date']) ? htmlspecialchars($_POST['form_appontment_date'], ENT_QUOTES, 'UTF-8') : '';
-        $appontment_time = isset($_POST['form_appontment_time']) ? htmlspecialchars($_POST['form_appontment_time'], ENT_QUOTES, 'UTF-8') : '';
+        $appontment_date = isset($_POST['form_appontment_date']) ? $_POST['form_appontment_date'] : '';
+        $appontment_time = isset($_POST['form_appontment_time']) ? $_POST['form_appontment_time'] : '';
 
-        if( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
-            $message = 'Please provide a valid email address.';
-            $status = "false";
-        } else {
-            // Run spam protection checks (honeypot + rate limiting + reCAPTCHA)
-            $spamCheck = check_spam_protection('form_botcheck');
+        $botcheck = $_POST['form_botcheck'];
 
-            if( $spamCheck['passed'] ) {
+        $toemail = 'spam.thememascot@gmail.com'; // Your Email Address
+        $toname = 'ThemeMascot'; // Your Name
 
-                $name_line = !empty($name) ? "Name: $name<br><br>" : '';
-                $email_line = !empty($email) ? "Email: $email<br><br>" : '';
-                $phone_line = !empty($phone) ? "Phone: $phone<br><br>" : '';
-                $date_line = !empty($appontment_date) ? "Appointment Date: $appontment_date<br><br>" : '';
-                $time_line = !empty($appontment_time) ? "Appointment Time: $appontment_time<br><br>" : '';
-                $message_line = !empty($form_message) ? "Message: $form_message<br><br>" : '';
+        if( $botcheck == '' ) {
 
-                $referrer = isset($_SERVER['HTTP_REFERER']) ? '<br><br><br>This Form was submitted from: ' . htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
+            $mail->SetFrom( $email , $name );
+            $mail->AddReplyTo( $email , $name );
+            $mail->AddAddress( $toemail , $toname );
+            $mail->Subject = $subject;
 
-                $body = "$name_line $email_line $phone_line $date_line $time_line $message_line $referrer";
+            $name = isset($name) ? "Name: $name<br><br>" : '';
+            $email = isset($email) ? "Email: $email<br><br>" : '';
+            $phone = isset($phone) ? "Phone: $phone<br><br>" : '';
+            $appontment_date = isset($appontment_date) ? "Appoinment Date: $appontment_date<br><br>" : '';
+            $appontment_time = isset($appontment_time) ? "Appoinment Time: $appontment_time<br><br>" : '';
+            $message = isset($message) ? "Message: $message<br><br>" : '';
 
-                $result = sendgrid_send(
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    $subject,
-                    $body,
-                    $email, $name
-                );
+            $referrer = $_SERVER['HTTP_REFERER'] ? '<br><br><br>This Form was submitted from: ' . $_SERVER['HTTP_REFERER'] : '';
 
-                if( $result['success'] ):
-                    $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
-                    $status = "true";
-                else:
-                    $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.';
-                    $status = "false";
-                endif;
-            } else {
-                $message = htmlspecialchars($spamCheck['error'], ENT_QUOTES, 'UTF-8');
+            $body = "$name $email $phone $appontment_date $appontment_time $message $referrer";
+
+            $mail->MsgHTML( $body );
+            $sendEmail = $mail->Send();
+
+            if( $sendEmail == true ):
+                $message = 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
+                $status = "true";
+            else:
+                $message = 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.<br /><br /><strong>Reason:</strong><br />' . $mail->ErrorInfo . '';
                 $status = "false";
-            }
+            endif;
+        } else {
+            $message = 'Bot <strong>Detected</strong>.! Clean yourself Botster.!';
+            $status = "false";
         }
     } else {
         $message = 'Please <strong>Fill up</strong> all the Fields and Try Again.';

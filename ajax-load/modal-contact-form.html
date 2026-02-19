@@ -4,7 +4,7 @@
 </div>
 <div class="p-40">
   <!-- Contact Form -->
-  <form id="contact_form" name="contact_form" class="" action="includes/sendmail.php" method="post">
+  <form id="contact_form" name="contact_form" class="">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group mb-30">
@@ -33,7 +33,7 @@
       <textarea name="form_message" class="form-control required" rows="5" placeholder="Enter Message"></textarea>
     </div>
         <div class="form-group mb-15">
-      <div class="g-recaptcha" data-sitekey="RECAPTCHA_SITE_KEY_PLACEHOLDER"></div>
+      <div class="h-captcha" data-captcha="true" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
     </div>
         <div class="form-group mb-30">
       <input name="form_botcheck" class="form-control" type="hidden" value="" />
@@ -51,18 +51,7 @@
         form_btn.before('<div id="form-result" class="alert alert-success" role="alert" style="display: none;"></div>');
         var form_btn_old_msg = form_btn.html();
         form_btn.html(form_btn.prop('disabled', true).data("loading-text"));
-        $(form).ajaxSubmit({
-          dataType:  'json',
-          success: function(data) {
-            if( data.status == 'true' ) {
-              $(form).find('.form-control').val('');
-              if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-            }
-            form_btn.prop('disabled', false).html(form_btn_old_msg);
-            $(form_result_div).html(data.message).fadeIn('slow');
-            setTimeout(function(){ $(form_result_div).fadeOut('slow') }, 6000);
-          }
-        });
+        submitToWeb3Forms(form, form_btn, form_result_div, form_btn_old_msg);
       }
     });
   </script>

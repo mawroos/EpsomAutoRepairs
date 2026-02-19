@@ -4,7 +4,7 @@
 </div>
 <div class="p-40">
   <!-- Reservation Form Start-->
-    <form id="popup_reservation_form" name="reservation_form" class="reservation-form" method="post" action="includes/booking-form-large.php">
+    <form id="popup_reservation_form" name="reservation_form" class="reservation-form">
       <div class="row">
         <div class="reservation-first-step">
           <h3 class="text-theme-colored line-bottom ml-15 mb-30 mr-15">Vehicle <span class="text-theme-color-2">Information</span></h3>
@@ -175,7 +175,7 @@
           </div>
           <div class="col-sm-12">
             <div class="form-group mb-20">
-              <div class="g-recaptcha" data-sitekey="RECAPTCHA_SITE_KEY_PLACEHOLDER"></div>
+              <div class="h-captcha" data-captcha="true" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
             </div>
           </div>
           <div class="col-sm-12">
@@ -199,18 +199,7 @@
           form_btn.before('<div id="popup_form-result" class="alert alert-success" role="alert" style="display: none;"></div>');
           var form_btn_old_msg = form_btn.html();
           form_btn.html(form_btn.prop('disabled', true).data("loading-text"));
-          $(form).ajaxSubmit({
-            dataType:  'json',
-            success: function(data) {
-              if( data.status == 'true' ) {
-                $(form).find('.form-control').val('');
-                if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-              }
-              form_btn.prop('disabled', false).html(form_btn_old_msg);
-              $(form_result_div).html(data.message).fadeIn('slow');
-              setTimeout(function(){ $(form_result_div).fadeOut('slow') }, 6000);
-            }
-          });
+          submitToWeb3Forms(form, form_btn, form_result_div, form_btn_old_msg);
         }
       });
     </script>

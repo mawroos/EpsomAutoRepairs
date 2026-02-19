@@ -1,41 +1,33 @@
 # EpsomAutoRepairs
 
-## Email & Contact Form Setup
+## Contact Form Setup
 
-Contact forms use **SendGrid** for email delivery and **Google reCAPTCHA v2** for spam protection.
+Contact forms work entirely client-side using **Web3Forms** for email delivery and **hCaptcha** for spam protection. No server-side code or PHP required — compatible with any static hosting (GitHub Pages, Netlify, Vercel, etc.).
 
-### Required Environment Variables
+### Quick Start
 
-Set the following environment variables on your server (see `.env.example`):
+1. **Get a Web3Forms access key** (free, 250 submissions/month):
+   - Go to [web3forms.com](https://web3forms.com/) and enter your email
+   - You'll receive an access key — copy it
+   - Open `js/contact-form-handler.js` and replace `YOUR_ACCESS_KEY_HERE` with your key
 
-| Variable | Description |
-|---|---|
-| `SENDGRID_API_KEY` | Your SendGrid API key ([get one here](https://sendgrid.com/docs/ui/account-and-settings/api-keys/)) |
-| `CONTACT_EMAIL` | The email address that receives form submissions |
-| `CONTACT_NAME` | The display name for the recipient |
-| `RECAPTCHA_SITE_KEY` | Google reCAPTCHA v2 site key ([register here](https://www.google.com/recaptcha/admin)) |
-| `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA v2 secret key |
+2. **Get an hCaptcha site key** (free):
+   - Sign up at [hcaptcha.com](https://www.hcaptcha.com/)
+   - Create a new site and copy the site key
+   - In `index.html` and the `ajax-load/*.html` form files, replace `YOUR_HCAPTCHA_SITE_KEY` with your key
 
-### reCAPTCHA Setup
+That's it — forms will now send emails to your inbox with spam protection.
 
-1. Go to [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin) and register your site
-2. Choose **reCAPTCHA v2** → "I'm not a robot" Checkbox
-3. Add your domain(s) to the allowed domains list
-4. Copy the **Site Key** and **Secret Key**
-5. Set the environment variables `RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY`
-6. Replace `RECAPTCHA_SITE_KEY_PLACEHOLDER` in `index.html` and `ajax-load/modal-contact-form.html` with your actual site key
+### How It Works
 
-### SendGrid Setup
-
-1. Create a free [SendGrid account](https://signup.sendgrid.com/)
-2. Verify a [Sender Identity](https://docs.sendgrid.com/ui/sending-email/sender-verification) (the `CONTACT_EMAIL` address)
-3. Create an [API key](https://docs.sendgrid.com/ui/account-and-settings/api-keys/) with "Mail Send" permission
-4. Set the `SENDGRID_API_KEY` environment variable
+- Forms submit via AJAX to the Web3Forms API (`https://api.web3forms.com/submit`)
+- Web3Forms delivers the form data to your email inbox
+- No backend, no PHP, no server configuration needed
 
 ### Spam Protection
 
-The contact forms include three layers of spam protection:
+Three layers of spam protection, all client-side:
 
-1. **Honeypot field** — a hidden form field that bots typically fill in, triggering rejection
-2. **Google reCAPTCHA v2** — "I'm not a robot" checkbox verification
-3. **Rate limiting** — limits submissions to 5 per IP address within a 5-minute window
+1. **Honeypot field** — a hidden form field that bots fill in, triggering rejection
+2. **hCaptcha** — "I'm not a robot" challenge (free, privacy-friendly alternative to reCAPTCHA)
+3. **Web3Forms built-in filtering** — server-side spam detection by Web3Forms

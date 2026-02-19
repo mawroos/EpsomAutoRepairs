@@ -1,66 +1,81 @@
 <?php
 
-require_once(__DIR__ . '/sendgrid-mailer.php');
-require_once(__DIR__ . '/spam-protection.php');
+require_once('phpmailer/class.phpmailer.php');
+require_once('phpmailer/class.smtp.php');
+
+$mail = new PHPMailer();
+$autoresponder = new PHPMailer();
+
+//$mail->SMTPDebug = 3;                               // Enable verbose debug output
+$mail->isSMTP();                                      // Set mailer to use SMTP
+$mail->Host = 'just55.justhost.com';  // Specify main and backup SMTP servers
+$mail->SMTPAuth = true;                               // Enable SMTP authentication
+$mail->Username = 'themeforest@ismail-hossain.me';                 // SMTP username
+$mail->Password = 'AsDf12**';                           // SMTP password
+$mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
+$mail->Port = 465;                                    // TCP port to connect to
+
 
 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
     if( $_POST['contact-form-name'] != '' AND $_POST['contact-form-email'] != '' AND $_POST['contact-form-subject'] != '' ) {
 
-        $name = htmlspecialchars($_POST['contact-form-name'], ENT_QUOTES, 'UTF-8');
-        $email = filter_var($_POST['contact-form-email'], FILTER_SANITIZE_EMAIL);
-        $subject = htmlspecialchars($_POST['contact-form-subject'], ENT_QUOTES, 'UTF-8');
-        $phone = htmlspecialchars($_POST['contact-form-phone'], ENT_QUOTES, 'UTF-8');
-        $form_message = htmlspecialchars($_POST['contact-form-message'], ENT_QUOTES, 'UTF-8');
+        $name = $_POST['contact-form-name'];
+        $email = $_POST['contact-form-email'];
+        $subject = $_POST['contact-form-subject'];
+        $phone = $_POST['contact-form-phone'];
+        $message = $_POST['contact-form-message'];
 
-        $subject = !empty($subject) ? $subject : 'New Message From Contact Form';
 
-        if( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
-            echo 'Please provide a valid email address.';
-        } else {
-            // Run spam protection checks (honeypot + rate limiting + reCAPTCHA)
-            $spamCheck = check_spam_protection('contact-form-botcheck');
+		$subject = isset($subject) ? $subject : 'New Message From Contact Form';
 
-            if( $spamCheck['passed'] ) {
+		$botcheck = $_POST['contact-form-botcheck'];
 
-                $name_line = !empty($name) ? "Name: $name<br><br>" : '';
-                $email_line = !empty($email) ? "Email: $email<br><br>" : '';
-                $phone_line = !empty($phone) ? "Phone: $phone<br><br>" : '';
-                $message_line = !empty($form_message) ? "Message: $form_message<br><br>" : '';
+        $toemail = 'spam.thememascot@gmail.com'; // Your Email Address
+        $toname = 'ThemeMascot'; // Your Name
 
-                $referrer = isset($_SERVER['HTTP_REFERER']) ? '<br><br><br>This Form was submitted from: ' . htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
+		if( $botcheck == '' ) {
 
-                $body = "$name_line $email_line $phone_line $message_line $referrer";
+			$mail->SetFrom( $email , $name );
+			$mail->AddReplyTo( $email , $name );
+			$mail->AddAddress( $toemail , $toname );
+			$mail->Subject = $subject;
 
-                $result = sendgrid_send(
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    CONTACT_EMAIL, CONTACT_NAME,
-                    $subject,
-                    $body,
-                    $email, $name
-                );
+			$autoresponder->SetFrom( $toemail , $toname );
+			$autoresponder->AddReplyTo( $toemail , $toname );
+			$autoresponder->AddAddress( $email , $name );
+			$autoresponder->Subject = 'We\'ve received your Email';
 
-                if( $result['success'] ):
-                    // Send autoresponder
-                    $ar_body = "Thank you for contacting us. We will reply within 24 hours.<br><br>Regards,<br>" . CONTACT_NAME . ".";
-                    sendgrid_send(
-                        $email, $name,
-                        CONTACT_EMAIL, CONTACT_NAME,
-                        'We\'ve received your Email',
-                        $ar_body
-                    );
-                    echo 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
-                else:
-                    echo 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.';
-                endif;
-            } else {
-                echo htmlspecialchars($spamCheck['error'], ENT_QUOTES, 'UTF-8');
-            }
-        }
-    } else {
-        echo 'Please <strong>Fill up</strong> all the Fields and Try Again.';
-    }
+			$ar_body = "Thank you for contacting us. We will reply within 24 hours.<br><br>Regards,<br>Your Company.";
+
+			$name = isset($name) ? "Name: $name<br><br>" : '';
+			$email = isset($email) ? "Email: $email<br><br>" : '';
+			$phone = isset($phone) ? "Phone: $phone<br><br>" : '';
+			$message = isset($message) ? "Message: $message<br><br>" : '';
+
+			$referrer = $_SERVER['HTTP_REFERER'] ? '<br><br><br>This Form was submitted from: ' . $_SERVER['HTTP_REFERER'] : '';
+
+			$body = "$name $email $phone $message $referrer";
+
+			$ar_body = "Thank you for contacting us. We will reply within 24 hours.<br><br>Regards,<br>Your Company.";
+
+			$autoresponder->MsgHTML( $ar_body );
+			$mail->MsgHTML( $body );
+			$sendEmail = $mail->Send();
+
+			if( $sendEmail == true ):
+				$send_arEmail = $autoresponder->Send();
+				echo 'We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.';
+			else:
+				echo 'Email <strong>could not</strong> be sent due to some Unexpected Error. Please Try Again later.<br /><br /><strong>Reason:</strong><br />' . $mail->ErrorInfo . '';
+			endif;
+		} else {
+			echo 'Bot <strong>Detected</strong>.! Clean yourself Botster.!';
+		}
+	} else {
+		echo 'Please <strong>Fill up</strong> all the Fields and Try Again.';
+	}
 } else {
-    echo 'An <strong>unexpected error</strong> occured. Please Try Again later.';
+	echo 'An <strong>unexpected error</strong> occured. Please Try Again later.';
 }
 
 ?>

@@ -61,8 +61,9 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Google reCAPTCHA v2 -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- Contact form handler (Web3Forms + hCaptcha) -->
+<script src="js/contact-form-handler.js"></script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 </head>
 <body class="">
 <div id="wrapper" class="clearfix">
@@ -617,7 +618,7 @@
             <div class="p-50 p-sm-0 p-sm-0 pt-sm-30 pb-sm-30">
               <h3 class="mt-0 line-bottom mb-30">Contact <span class="text-theme-color-2 font-weight-600">Us</span></h3>
               <!-- Contact Form -->
-              <form id="contact_form_footer" name="contact_form" class="" action="includes/sendmail.php" method="post">
+              <form id="contact_form_footer" name="contact_form" class="">
                 <div class="row">
                   <div class="col-sm-12">
                      <div class="form-group mb-20">
@@ -641,7 +642,7 @@
                   </div>
                   <div class="col-sm-12">
                     <div class="form-group mb-20">
-                      <div class="g-recaptcha" data-sitekey="RECAPTCHA_SITE_KEY_PLACEHOLDER"></div>
+                      <div class="h-captcha" data-captcha="true" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
                     </div>
                   </div>
                   <div class="col-sm-12">
@@ -662,18 +663,7 @@
                     form_btn.before('<div id="form-result" class="alert alert-success" role="alert" style="display: none;"></div>');
                     var form_btn_old_msg = form_btn.html();
                     form_btn.html(form_btn.prop('disabled', true).data("loading-text"));
-                    $(form).ajaxSubmit({
-                      dataType:  'json',
-                      success: function(data) {
-                        if( data.status == 'true' ) {
-                          $(form).find('.form-control').val('');
-                          if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
-                        }
-                        form_btn.prop('disabled', false).html(form_btn_old_msg);
-                        $(form_result_div).html(data.message).fadeIn('slow');
-                        setTimeout(function(){ $(form_result_div).fadeOut('slow') }, 6000);
-                      }
-                    });
+                    submitToWeb3Forms(form, form_btn, form_result_div, form_btn_old_msg);
                   }
                 });
               </script>
