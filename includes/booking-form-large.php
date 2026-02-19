@@ -18,29 +18,20 @@ $mail->Port = 465;                                    // TCP port to connect to
 $status = "false";
 
 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-    if( $_POST['reservation_name'] != '' AND $_POST['reservation_email'] != '' AND $_POST['reservation_phone'] != '' AND $_POST['car_service_select'] != '') {
+    if( $_POST['reservation_name'] != '' AND $_POST['reservation_email'] != '' AND $_POST['reservation_phone'] != '') {
 
         $name = $_POST['reservation_name'];
         $email = $_POST['reservation_email'];
         $phone = $_POST['reservation_phone'];
-        $address = $_POST['reservation_address'];
 
-        $car_name = $_POST['car_name_select'];
-        $car_type = $_POST['car_type_select'];
-        $car_year = $_POST['car_year_select'];
-        $car_number_of_wheels = $_POST['number_of_wheels'];
-        $car_extra_services = $_POST['extra_services'];
-        $car_model = $_POST['car_model'];
-        $car_service = $_POST['car_service_select'];
-
-        $subject = isset($subject) ? $subject : 'New Message | reservation Form';
+        $subject = 'New Booking | B&M Auto Repairs';
         $reservation_date = isset($_POST['reservation_date']) ? $_POST['reservation_date'] : '';
         $message = $_POST['form_message'];
 
         $botcheck = $_POST['form_botcheck'];
 
-        $toemail = 'spam.thememascot@gmail.com'; // Your Email Address
-        $toname = 'ThemeMascot';                // Receiver Name
+        $toemail = 'epsomauto@hotmail.com';   // Your Email Address
+        $toname = 'B&M Auto Repairs';         // Receiver Name
 
         if( $botcheck == '' ) {
 
@@ -52,24 +43,13 @@ if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
             $name = isset($name) ? "Name: $name<br><br>" : '';
             $email = isset($email) ? "Email: $email<br><br>" : '';
             $phone = isset($phone) ? "Phone: $phone<br><br>" : '';
-            $address = isset($address) ? "Address: $address<br><br>" : '';
 
-            $car_name = isset($car_name) ? "Car Name: $car_name<br><br>" : '';
-            $car_type = isset($car_type) ? "Car Type: $car_type<br><br>" : '';
-            $car_year = isset($car_year) ? "Car Year: $car_year<br><br>" : '';
-            $car_number_of_wheels = isset($car_number_of_wheels) ? "Number Of Wheels: $car_number_of_wheels<br><br>" : '';
-
-            $car_extra_services = implode(", ", $car_extra_services);
-            $car_extra_services = isset($car_extra_services) ? "Extra Services: $car_extra_services<br><br>" : '';
-            
-            $car_model = isset($car_model) ? "Car Model: $car_model<br><br>" : '';
-            $car_service = isset($car_service) ? "Car Service: $car_service<br><br>" : '';
-            $reservation_date = isset($reservation_date) ? "Reservation: $reservation_date<br><br>" : '';
+            $reservation_date = isset($reservation_date) ? "Preferred Date/Time: $reservation_date<br><br>" : '';
             $message = isset($message) ? "Message: $message<br><br>" : '';
 
             $referrer = $_SERVER['HTTP_REFERER'] ? '<br><br><br>This Form was submitted from: ' . $_SERVER['HTTP_REFERER'] : '';
 
-            $body = "$name $email $phone $address $car_name $car_type $car_year $car_number_of_wheels $car_extra_services $car_model $car_service $reservation_date $message $referrer";
+            $body = "$name $email $phone $reservation_date $message $referrer";
 
             $mail->MsgHTML( $body );
             $sendEmail = $mail->Send();
