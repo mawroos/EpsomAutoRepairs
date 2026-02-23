@@ -9,12 +9,18 @@ Contact forms work entirely client-side using **Web3Forms** for email delivery a
 1. **Get a Web3Forms access key** (free, 250 submissions/month):
    - Go to [web3forms.com](https://web3forms.com/) and enter your email
    - You'll receive an access key — copy it
-   - Open `js/contact-form-handler.js` and replace `YOUR_ACCESS_KEY_HERE` with your key
 
 2. **Get an hCaptcha site key** (free):
    - Sign up at [hcaptcha.com](https://www.hcaptcha.com/)
    - Create a new site and copy the site key
-   - In `index.html` and the `ajax-load/*.html` form files, replace `YOUR_HCAPTCHA_SITE_KEY` with your key
+
+3. **Add both keys as GitHub Secrets** (so they're injected automatically on deploy):
+   - Go to your repo → **Settings** → **Secrets and variables** → **Actions**
+   - Click **New repository secret** and add:
+     - Name: `WEB3FORMS_ACCESS_KEY` — Value: your Web3Forms access key
+     - Name: `HCAPTCHA_SITE_KEY` — Value: your hCaptcha site key
+
+4. **Push to `main`** — the GitHub Actions workflow will automatically replace the placeholders with your keys and deploy to GitHub Pages.
 
 That's it — forms will now send emails to your inbox with spam protection.
 
