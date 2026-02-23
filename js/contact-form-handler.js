@@ -5,12 +5,10 @@
  * Setup:
  *   1. Get a free access key at https://web3forms.com/
  *   2. Replace WEB3FORMS_ACCESS_KEY below with your key
- *   3. Optionally add hCaptcha for extra spam protection
  *
  * Web3Forms provides:
  *   - Email delivery to your inbox
  *   - Built-in honeypot spam detection (via the botcheck field)
- *   - Optional hCaptcha integration
  *   - JSON API responses for AJAX forms
  */
 
@@ -41,12 +39,6 @@ function submitToWeb3Forms(form, form_btn, form_result_div, form_btn_old_msg) {
   }
   formData.push({ name: 'botcheck', value: botcheckVal });
 
-  // Include the hCaptcha response if present
-  var hcaptchaResponse = $(form).find('[name="h-captcha-response"]').val();
-  if (hcaptchaResponse) {
-    formData.push({ name: 'h-captcha-response', value: hcaptchaResponse });
-  }
-
   $.ajax({
     url: 'https://api.web3forms.com/submit',
     type: 'POST',
@@ -55,10 +47,6 @@ function submitToWeb3Forms(form, form_btn, form_result_div, form_btn_old_msg) {
     success: function(data) {
       if (data.success) {
         $(form).find('.form-control').val('');
-        // Reset hCaptcha if present
-        if (typeof hcaptcha !== 'undefined') {
-          hcaptcha.reset();
-        }
         $(form_result_div).removeClass('alert-danger').addClass('alert-success');
         $(form_result_div).html('We have <strong>successfully</strong> received your Message and will get Back to you as soon as possible.').fadeIn('slow');
       } else {
