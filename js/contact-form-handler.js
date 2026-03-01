@@ -12,7 +12,7 @@
  *   - JSON API responses for AJAX forms
  */
 
-var WEB3FORMS_ACCESS_KEY = 'YOUR_ACCESS_KEY_HERE';
+var WEB3FORMS_ACCESS_KEY = '9c1eb9e7-4938-4ccb-b7ff-9edb05d5ab81';
 
 /**
  * Submit a form to Web3Forms via AJAX.
