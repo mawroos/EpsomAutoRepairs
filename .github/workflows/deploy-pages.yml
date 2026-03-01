@@ -39,7 +39,11 @@ jobs:
             echo "::error::Missing required secret. Add WEB3FORMS_ACCESS_KEY in Settings > Secrets > Actions."
             exit 1
           fi
-          sed -i "s/YOUR_ACCESS_KEY_HERE/$WEB3FORMS_ACCESS_KEY/g" js/contact-form-handler.js
+          perl -i -pe 's/YOUR_ACCESS_KEY_HERE/$ENV{WEB3FORMS_ACCESS_KEY}/g' js/contact-form-handler.js
+          if grep -q 'YOUR_ACCESS_KEY_HERE' js/contact-form-handler.js; then
+            echo "::error::Failed to inject WEB3FORMS_ACCESS_KEY into contact-form-handler.js"
+            exit 1
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
