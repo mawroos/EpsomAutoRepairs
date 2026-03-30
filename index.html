@@ -43,6 +43,44 @@
 <!-- CSS | Theme Color -->
 <link href="css/colors/theme-skin-color-set-4.css" rel="stylesheet" type="text/css">
 
+<!-- Promotional Banner Styles -->
+<style>
+  .promo-banner {
+    text-align: center;
+    font-weight: 600;
+    position: relative;
+    z-index: 1000;
+  }
+  .promo-banner-top {
+    background-color: #263247;
+    color: #fff;
+    padding: 12px 15px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
+  .promo-banner-top a {
+    color: #FFB600;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+  .promo-banner-tyres {
+    background-color: #FFB600;
+    padding: 30px 0;
+  }
+  .promo-banner-tyres h3 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #263247;
+  }
+  .promo-banner-tyres p {
+    margin: 0;
+    font-size: 17px;
+    color: #263247;
+    font-weight: 500;
+  }
+</style>
+
 <!-- external javascripts -->
 <script src="js/jquery-2.2.4.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
@@ -66,6 +104,11 @@
 </head>
 <body class="">
 <div id="wrapper" class="clearfix">
+
+  <!-- Top Promotional Banner: EV Service Special -->
+  <div id="promo-banner-top" class="promo-banner promo-banner-top">
+    <span><span aria-hidden="true">⚡</span> EV Service Special – Just $99 + GST! <span aria-hidden="true">⏳</span> Limited Time Only – <a href="ajax-load/reservation-form.html" class="bs-modal-ajax-load" data-toggle="modal" data-target="#BSParentModal">Book Now!</a></span>
+  </div>
   
   <!-- Header -->
   <header id="header" class="header">
@@ -520,6 +563,14 @@
 
     <!-- Section: About (Removed) -->
     
+    <!-- Promotional Banner: Tyre & Wheel Alignment -->
+    <section id="promo-banner-tyres" class="promo-banner promo-banner-tyres">
+      <div class="container">
+        <h3 aria-label="Buy 4 Tyres and Get a FREE $90 Wheel Alignment on Us"><span aria-hidden="true">🚗</span> Buy 4 Tyres &amp; Get a FREE $90 Wheel Alignment on Us</h3>
+        <p>Drive smoother, safer, and get more life out of your tyres</p>
+      </div>
+    </section>
+
     <!-- Section: Services -->
     <section id="services" class="bg-lighter">
       <div class="container">
